@@ -18,3 +18,4 @@ Every video has a know displacement that is measured through a process detailed 
  Clemot Nicolas
  MULAMBA TSHIKOMB Innocent
  KUBLER Grégoire 
+ GAULIER Basile
