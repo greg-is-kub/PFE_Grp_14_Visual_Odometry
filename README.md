@@ -15,7 +15,7 @@ Every video has a know displacement that is measured through a process detailed 
  ZHANG Yuancheng
  TARAKLI Imène
  DAHMANI Salim
- Clemot Nicolas
+ CLEMOT Nicolas
  MULAMBA TSHIKOMB Innocent
  KUBLER Grégoire 
  GAULIER Basile
