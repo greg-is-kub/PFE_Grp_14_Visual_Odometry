@@ -1,5 +1,4 @@
 #include <opencv2/core/core.hpp>
-#include <pair>
 #include <vector>
 #include <iostream>
 
@@ -9,3 +8,5 @@ Frame::Frame(int ind , long time , cv::mat img_left , cv::mat img_right){
   img::second = img_right;
   timestamp = time;
 }
+
+Frame::~Frame(void){}
