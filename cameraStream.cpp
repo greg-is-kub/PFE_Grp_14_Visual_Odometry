@@ -18,9 +18,17 @@ int main() {
     while (true) {
         Mat cameraFrame;
         stream1.read(cameraFrame);
-        imshow("cam", cameraFrame);
+        cout << cameraFrame.size() << endl;
+        
         if (waitKey(30) >= 0)
             break;
+        Mat cameraGauche = cameraFrame(Range::all(), Range(0, 1087));
+        Mat cameraDroite = cameraFrame(Range::all(), Range(1088, 2175));
+        imshow("cam", cameraGauche);
+        
+        
+        //imshow("cam", cameraDroite);
+        
     }
     return 0;
 }
