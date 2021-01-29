@@ -2,9 +2,11 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/surface_matching/icp.hpp>
 #include <opencv2/surface_matching/ppf_helpers.hpp>
+#include <opencv2/surface_matching/ppf_match_3d.hpp>
 // #include "extra.h" // used in opencv2
 using namespace std;
 using namespace cv;
+using namespace ppf_match_3d;
 
 void find_feature_matches(
   const Mat &img_1, const Mat &img_2,
@@ -56,13 +58,21 @@ int main(int argc, char **argv) {
 
 
   //-- 估计两张图像间运动
-  Mat R, t;
-  pose_estimation_2d2d(keypoints_1, keypoints_2, matches1, R, t);
-  pose_estimation_2d2d(keypoints_3, keypoints_4, matches2, R, t);
+  
+  
+  Mat R = (Mat_<double>(3, 3) << 1.00, 0.0133051171055671,
+                                -0.00534470796279029, -0.0133694262332647, 0.999836410542635,
+                                -0.0121823887399877,0.00518174551610382,
+                                0.0122525920533588, 0.999911507835259);
+  Mat t = (Mat_<double>(1, 3) << -50.28, 0.077, 0.45);
+  //pose_estimation_2d2d(keypoints_1, keypoints_2, matches1, R, t);
+  //pose_estimation_2d2d(keypoints_3, keypoints_4, matches2, R, t);
   //-- 三角化
   vector<Point3d> points1,points2;
   triangulation(keypoints_1, keypoints_2, matches1, R, t, points1);
   triangulation(keypoints_3, keypoints_4, matches2, R, t, points2);
+  
+  
   cv::ppf_match_3d::ICP iterativeClosestPoint;
   double error;
   cv::Matx44d transformation;
@@ -72,18 +82,43 @@ int main(int argc, char **argv) {
   
   Mat p1, p2;
   Vec3f f = Vec3f(0,0,0);
-  cv::ppf_match_3d::computeNormalsPC3d(points11, p1, 3, 0, f);
-  cv::ppf_match_3d::computeNormalsPC3d(points22, p2, 3, 0, f);
+  cv::ppf_match_3d::computeNormalsPC3d(points11, p1, 12, 0, f);
+  cv::ppf_match_3d::computeNormalsPC3d(points22, p2, 12, 0, f);
   
+  
+  ppf_match_3d::PPF3DDetector detector(0.025, 0.05);
+  detector.trainModel(p1);
+  vector<ppf_match_3d::Pose3DPtr> results;
+  detector.match(p2, results, 1.0/40.0, 0.05);
+  int N = 2;
+  vector<ppf_match_3d::Pose3DPtr> resultsSub(results.begin(),results.begin()+N);
+  
+
   cout << "一共找到了" << p1.cols << "组匹配点" << endl;
   
-  points11=points11(Range(0,386), Range::all());
-  
+  int mini = min(p1.cols, p2.cols);
+  	
+  //points11=points11(Range(0,mini), Range::all());
+  //points22=points22(Range(0,mini), Range::all());
   
 
 
-  iterativeClosestPoint.registerModelToScene(p1,p2, error, transformation);
-  cout << transformation << endl;
+  iterativeClosestPoint.registerModelToScene(p1,p2, resultsSub);
+  
+  cout << "Poses: " << endl;
+    // debug first five poses
+    for (size_t i=0; i<resultsSub.size(); i++)
+    {
+        Pose3DPtr result = resultsSub[i];
+        cout << "Pose Result " << i << endl;
+        result->printPose();
+        if (i==0)
+        {
+            Mat pct = transformPCPose(p1, result->pose);
+            cout << pct << endl;
+        }
+    }
+  
   //-- 验证三角化点与特征点的重投影关系
   
   
@@ -138,32 +173,7 @@ void find_feature_matches(const Mat &img_1, const Mat &img_2,
   }
 }
 
-void pose_estimation_2d2d(
-  const std::vector<KeyPoint> &keypoints_1,
-  const std::vector<KeyPoint> &keypoints_2,
-  const std::vector<DMatch> &matches,
-  Mat &R, Mat &t) {
-  // 相机内参,TUM Freiburg2
-  Mat K = (Mat_<double>(3, 3) << 520.9, 0, 325.1, 0, 521.0, 249.7, 0, 0, 1);
 
-  //-- 把匹配点转换为vector<Point2f>的形式
-  vector<Point2f> points1;
-  vector<Point2f> points2;
-
-  for (int i = 0; i < (int) matches.size(); i++) {
-    points1.push_back(keypoints_1[matches[i].queryIdx].pt);
-    points2.push_back(keypoints_2[matches[i].trainIdx].pt);
-  }
-
-  //-- 计算本质矩阵
-  Point2d principal_point(325.1, 249.7);        //相机主点, TUM dataset标定值
-  int focal_length = 521;            //相机焦距, TUM dataset标定值
-  Mat essential_matrix;
-  essential_matrix = findEssentialMat(points1, points2, focal_length, principal_point);
-
-  //-- 从本质矩阵中恢复旋转和平移信息.
-  recoverPose(essential_matrix, points1, points2, R, t, focal_length, principal_point);
-}
 
 void triangulation(
   const vector<KeyPoint> &keypoint_1,
@@ -181,12 +191,13 @@ void triangulation(
     R.at<double>(2, 0), R.at<double>(2, 1), R.at<double>(2, 2), t.at<double>(2, 0)
   );
 
-  Mat K = (Mat_<double>(3, 3) << 520.9, 0, 325.1, 0, 521.0, 249.7, 0, 0, 1);
+  Mat K_d = (Mat_<double>(3, 3) << 1535.50, 0, 739.86, 0, 1535.00, 606.36, 0, 0, 1);
+  Mat K_g = (Mat_<double>(3, 3) << 1534.72, 0, 676.97, 0, 1535.00, 698.28, 0, 0, 1);
   vector<Point2f> pts_1, pts_2;
   for (DMatch m:matches) {
     // 将像素坐标转换至相机坐标
-    pts_1.push_back(pixel2cam(keypoint_1[m.queryIdx].pt, K));
-    pts_2.push_back(pixel2cam(keypoint_2[m.trainIdx].pt, K));
+    pts_1.push_back(pixel2cam(keypoint_1[m.queryIdx].pt, K_g));
+    pts_2.push_back(pixel2cam(keypoint_2[m.trainIdx].pt, K_d));
   }
 
   Mat pts_4d;
@@ -212,4 +223,3 @@ Point2f pixel2cam(const Point2d &p, const Mat &K) {
       (p.y - K.at<double>(1, 2)) / K.at<double>(1, 1)
     );
 }
-
