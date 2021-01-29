@@ -65,8 +65,9 @@ vector<DMatch> Orb::get_match(Mat d1, Mat d2)
         return good_matches;
     }
 
-tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>> Orb::run(Mat img1, Mat img2)
+tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>,bool> Orb::run(Mat img1, Mat img2)
     {
+        bool flag=false;
         imgG=img1;
         imgD=img2;
 
@@ -76,13 +77,27 @@ tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>> Orb::run(Mat img1, Mat i
         l_k=get_point(imgG,imgD);
         kg=get<0>(l_k);
         kd=get<1>(l_k);
+        if (kg.empty() || kd.empty())
+        {
+            flag=true;
+        }
 
-        l_d=get_descriptor(imgG,kg,imgD,kd);
-        dg=get<0>(l_d);
-        dd=get<1>(l_d);
-        matches=get_match(dg,dd);
+        if (flag==false)
+        {
+            l_d=get_descriptor(imgG,kg,imgD,kd);
+            dg=get<0>(l_d);
+            dd=get<1>(l_d);
+        }
 
-        tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>> to_return (kg,kd,matches);
+        if (flag==false)
+        {
+            matches=get_match(dg,dd);
+        }
+        if (matches.empty())
+        {
+            flag=true;
+        }
+        tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>,bool> to_return (kg,kd,matches,flag);
         return to_return;
     }
 

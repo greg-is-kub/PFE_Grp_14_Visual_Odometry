@@ -19,7 +19,7 @@ class Orb
         Mat imgG;
         Mat imgD;
 
-        tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>> run(Mat, Mat);
+        tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>,bool> run(Mat, Mat);
 
         void show();
 

@@ -153,19 +153,29 @@ int main(int argc, char **argv)
 
     Mat IMAGE1=imread(argv[1], IMREAD_COLOR);
     Mat IMAGE2=imread(argv[2], IMREAD_COLOR);
+    cout<<IMAGE1.size<<endl;
 
 
-
-    //Appelle et récupéartion de la partie ORB
+    //Appelle et récupération de la partie ORB
     chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
-    tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>> gift;
+
+
+    tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>,bool> gift;
     vector<KeyPoint> keypoint1, keypoint2;
     vector<DMatch> MATCHES;
+    bool STOP = false;
     gift=a.run(IMAGE1,IMAGE2);
     keypoint1=get<0>(gift);
     keypoint2=get<1>(gift);
     MATCHES=get<2>(gift);
+    STOP=get<3>(gift);
 
+
+//    Variable STOP à true si problème lors de l'exécution de Orb, dans la boucle du main on utilise "continue" pour sauter la frame inutile
+//    if (STOP==true)
+//    {
+//        continue;
+//    }
     chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
     chrono::duration<double> time_used = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
     cout << "Time cost = " << time_used.count() << " seconds. " << endl;
