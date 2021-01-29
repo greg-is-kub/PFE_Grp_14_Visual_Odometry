@@ -2,9 +2,11 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/surface_matching/icp.hpp>
 #include <opencv2/surface_matching/ppf_helpers.hpp>
+#include <opencv2/surface_matching/ppf_match_3d.hpp>
 // #include "extra.h" // used in opencv2
 using namespace std;
 using namespace cv;
+using namespace ppf_match_3d;
 
 void find_feature_matches(
   const Mat &img_1, const Mat &img_2,
@@ -69,6 +71,8 @@ int main(int argc, char **argv) {
   vector<Point3d> points1,points2;
   triangulation(keypoints_1, keypoints_2, matches1, R, t, points1);
   triangulation(keypoints_3, keypoints_4, matches2, R, t, points2);
+  
+  
   cv::ppf_match_3d::ICP iterativeClosestPoint;
   double error;
   cv::Matx44d transformation;
@@ -81,20 +85,40 @@ int main(int argc, char **argv) {
   cv::ppf_match_3d::computeNormalsPC3d(points11, p1, 12, 0, f);
   cv::ppf_match_3d::computeNormalsPC3d(points22, p2, 12, 0, f);
   
+  
+  ppf_match_3d::PPF3DDetector detector(0.025, 0.05);
+  detector.trainModel(p1);
+  vector<ppf_match_3d::Pose3DPtr> results;
+  detector.match(p2, results, 1.0/40.0, 0.05);
+  int N = 2;
+  vector<ppf_match_3d::Pose3DPtr> resultsSub(results.begin(),results.begin()+N);
+  
+
   cout << "一共找到了" << p1.cols << "组匹配点" << endl;
   
   int mini = min(p1.cols, p2.cols);
   	
-  points11=points11(Range(0,mini), Range::all());
-  points22=points22(Range(0,mini), Range::all());
-  
-  
-  
+  //points11=points11(Range(0,mini), Range::all());
+  //points22=points22(Range(0,mini), Range::all());
   
 
 
-  iterativeClosestPoint.registerModelToScene(p1,p2, error, transformation);
-  cout << transformation << endl;
+  iterativeClosestPoint.registerModelToScene(p1,p2, resultsSub);
+  
+  cout << "Poses: " << endl;
+    // debug first five poses
+    for (size_t i=0; i<resultsSub.size(); i++)
+    {
+        Pose3DPtr result = resultsSub[i];
+        cout << "Pose Result " << i << endl;
+        result->printPose();
+        if (i==0)
+        {
+            Mat pct = transformPCPose(p1, result->pose);
+            cout << pct << endl;
+        }
+    }
+  
   //-- 验证三角化点与特征点的重投影关系
   
   
@@ -199,4 +223,3 @@ Point2f pixel2cam(const Point2d &p, const Mat &K) {
       (p.y - K.at<double>(1, 2)) / K.at<double>(1, 1)
     );
 }
-
