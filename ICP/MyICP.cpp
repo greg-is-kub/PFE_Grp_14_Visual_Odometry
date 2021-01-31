@@ -2,7 +2,7 @@
 
 MyICP::MyICP()
 {
-	std::cout<< "Voila ton ICP " << this << std::endl;
+	std::cout<< "Voila ton ICP " << std::endl;
 
 }
 MyICP::~MyICP()
