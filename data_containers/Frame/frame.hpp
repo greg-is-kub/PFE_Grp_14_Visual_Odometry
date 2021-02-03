@@ -3,19 +3,20 @@
 #include <opencv2/core/core.hpp>
 #include <vector>
 #include <iostream>
-
+#include <opencv2/core/affine.hpp>
 
 class Frame{
   public :
     int index ; // frame nb
-    long timestamp ;
+    //float timestamp ;
     bool keyframe ;
     uint64_t keyframe_id ;
     std::pair< cv::Mat , cv::Mat > img ; //respectively left then right img
-    std::vector< std::pair<cv::KeyPoint , cv::KeyPoint> > features ; //only matched features are kept
-    std::pair <cv::Mat ,cv::Mat > Pose ; //transformation matrix between left and right img
+    std::vector< std::tuple< cv::KeyPoint , cv::KeyPoint /*, cv::Mat*/ , cv::DMatch > > features ; //only matched features are kept
+    cv::Affine3f spatial_pose ; //transformation matrix between left and right img
+    cv::Affine3f temporal_pose ; //transformation matrix between position at t_(n) and t_(n+1)
 
-    Frame(int ind , long time ,cv::Mat img_left ,cv::Mat img_right);
+    Frame(int ind , /*floattime, */ cv::Mat img_left ,cv::Mat img_right);
     ~Frame(void);
 
 
