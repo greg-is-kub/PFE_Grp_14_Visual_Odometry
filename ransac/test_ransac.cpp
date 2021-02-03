@@ -63,7 +63,7 @@ int main(int argc, char **argv)
                                 0.0122525920533588, 0.999911507835259});
     cv::Matx31f T({ -50.28, 0.077, 0.45 });
     float focal_length = 0.0036; // focale length
-    Ransac ransac(input_data ,  n ,  error , w_goal ,  ptr_f ,  R , T , K_g , K_d , focal_length );
+    Ransac ransac(input_data ,  n ,  error , w_goal ,  R , T , K_g , K_d);
     std::cout<<"object created"<<std::endl;
 
     ransac.check_inliers(ransac.P);
@@ -72,6 +72,6 @@ int main(int argc, char **argv)
     std::cout <<"inlier rate =  " << ransac.best_w << std::endl;
     std::cout << "nb inlier = " << ransac.inlier.size()<<std::endl;
     cout << "Time cost = " << time_used.count() << " seconds. " << endl;
-    
+
     return 0;
 }

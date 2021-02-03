@@ -3,11 +3,11 @@
 #include <iostream>
 #include "frame.hpp"
 
-Frame::Frame(int ind , long time , cv::Mat img_left , cv::Mat img_right){
-  index = ind;
-  img.first = img_left;
-  img.second = img_right;
-  timestamp = time;
+Frame::Frame(int ind , /*long time ,*/ cv::Mat img_left , cv::Mat img_right){
+  this->index = ind;
+  this->img.first = img_left;
+  this->img.second = img_right;
+  //this->timestamp = time;
 }
 
 Frame::~Frame(void){}

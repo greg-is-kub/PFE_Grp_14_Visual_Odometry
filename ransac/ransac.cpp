@@ -5,14 +5,13 @@
 #include "ransac.hpp"
 
 //______________________CONSTRUCTOR & DESTRUCTOR_____________________
-Ransac::Ransac( std::tuple< std::vector<cv::KeyPoint> , std::vector<cv::KeyPoint> , std::vector<cv::DMatch> , bool > datapoint , uint64_t n , float error , float w , Frame* ptr_f, cv::Matx33f R, cv::Matx31f T , cv::Matx33f K_l , cv::Matx33f K_r , float f){
+Ransac::    Ransac(std::tuple< std::vector<cv::KeyPoint> , std::vector<cv::KeyPoint> , std::vector<cv::DMatch> , bool > datapoint , uint64_t n , float error , float w , cv::Matx33f R, cv::Matx31f T , cv::Matx33f K_g , cv::Matx33f K_d ){
     //std::cout<<"oui"<<std::endl;
     this->data = datapoint; //points matched
     this->n = n; // number of points necessary to build a model
     this->max_error = error;  //max error value for a point to be considered an inlier
     //std::cout<<"oui"<<std::endl;
     this->w_goal = w; //minimum inlier rate wanted
-    this->ptr_frame = ptr_f; //pointer on the frame containing the img Frame is a data container
     //std::cout<<"oui"<<std::endl;
     this->nb_samples = std::get<2>(datapoint).size();
     //need to init this->inlier , best_points and best_transform
@@ -21,8 +20,6 @@ Ransac::Ransac( std::tuple< std::vector<cv::KeyPoint> , std::vector<cv::KeyPoint
     //cv::vconcat(T2 , cv::Matx13f({0,0,1}) , this->P);
     this->K_l = K_l ;
     this->K_r = K_r ;
-    this->f  = f;
-
 }
 
 Ransac::~Ransac(void){}
@@ -89,7 +86,7 @@ int Ransac::check_inliers(cv::Affine3<float> P){
   /*iterate over data Dmatch to check distance and add inlier if
   distance between point after appllying transformation < max_error
   Using epipolar constraint*/
-  std::cout<<"debut inlier"<<std::endl;
+  //std::cout<<"debut inlier"<<std::endl;
 
   cv::Matx31f ptl_caml , ptr_caml , ptr_camr; //first attribute: point id Left /Right , second attribute :  camera reference Left/Right
   cv::Matx31f ptl_to_ptr; // distance from ptl to ptr in cam r ref
@@ -124,12 +121,12 @@ int Ransac::check_inliers(cv::Affine3<float> P){
     float temp_err = (l * ptl_iml)(0);
 
     //displaying values
-    std::cout <<"temp err  =  " << temp_err << " \t px" <<std::endl;
-    std::cout<<"max_error = " << max_error << "\t px" << std::endl;
+    //std::cout <<"temp err  =  " << temp_err << " \t px" <<std::endl;
+    //std::cout<<"max_error = " << max_error << "\t px" << std::endl;
 
     if(temp_err < this->max_error) {
       temp_inlier.push_back(temp_tuple);
-      std::cout<<"added to list"<<std::endl<<std::endl;
+      //std::cout<<"added to list"<<std::endl<<std::endl;
     }
   }
 

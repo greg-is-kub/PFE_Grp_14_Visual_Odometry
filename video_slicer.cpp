@@ -8,7 +8,9 @@
 #include <tuple>
 #include <opencv2/videoio.hpp>
 
-#include "orb.h"
+#include "ORB/orb.h"
+#include "ransac/ransac.hpp"
+#include "data_containers/Frame/frame.hpp"
 
 using namespace std;
 using namespace cv;
@@ -16,7 +18,7 @@ using namespace cv;
 std::vector<std::pair<cv::Mat,cv::Mat>> video_slicer(string path_to_video, int delay)
 {
     std::vector<std::pair<cv::Mat,cv::Mat>> to_return;
-    pair<Mat,Mat> one_frame;
+    std::pair<cv::Mat, cv::Mat> one_frame;
     int n_frame=0;
     VideoCapture vid(path_to_video);
 
@@ -70,7 +72,7 @@ std::vector<std::pair<cv::Mat,cv::Mat>> video_slicer(string path_to_video, int d
         n_frame++;
 
 
-        cout<<n_frame<<endl;
+        //cout<<n_frame<<endl;
     }
 
     vid.release();
@@ -81,62 +83,92 @@ std::vector<std::pair<cv::Mat,cv::Mat>> video_slicer(string path_to_video, int d
 
 }
 
-int main()
-{
-vector<pair<Mat,Mat>> sliced_video;
+/*
+std::tuple< cv::KeyPoint , cv::KeyPoint > custom_pop(  std::tuple< cv::KeyPoint , cv::KeyPoint , cv::DMatch > &tuple){
+  return tuple.pop(2);
+}
+*/
 
-string path="test_camera_stereo.mp4";
+//________________________________________________________________________________________________________
+//_________________________________MAIN_MAIN_MAIN_MAIN_MAIN_MAIN__________________________________________
+//________________________________________________________________________________________________________
+int main(){
+  //preparation of the frames
+  vector<pair<Mat,Mat>> sliced_video;
+  string path="test_camera_stereo.mp4";
+  //we won't process every frame , only one frame every delay frame
+  int delay = 10;
+  std::cout<<"precomputing video and extracting frames. . .";
+  sliced_video = video_slicer(path,delay);
+  std::cout<<"precomputing done" << std::endl;
+  ////________________________VAR INIT____________________________
+  //ORB var init
+  Orb orb;
+  Mat IMAGE1, IMAGE2;
+  tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>,bool> gift;
+  vector<KeyPoint> keypoint1, keypoint2;
+  vector<DMatch> MATCHES;
+  bool STOP=false;
 
-int delay=10;
-sliced_video=video_slicer(path,delay);
+  //RANSAC var init
+  cv::Matx33f K_d({ 1535.50, 0, 739.86, 0, 1535.00, 606.36, 0, 0, 1 });
+  cv::Matx33f K_g ({1534.72, 0, 676.97, 0, 1535.00, 698.28, 0, 0, 1});
 
-Orb a;
-Mat IMAGE1, IMAGE2;
-//initialisation variable de récupération de orb
-tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>,bool> gift;
-vector<KeyPoint> keypoint1, keypoint2;
-vector<DMatch> MATCHES;
-bool STOP=false;
+  //rotation and translation matrix from right to left camera
+  cv::Matx33f R({1.00, 0.0133051171055671,-0.00534470796279029,
+                -0.0133694262332647, 0.999836410542635,-0.0121823887399877,
+                0.00518174551610382,0.0122525920533588, 0.999911507835259});
+  cv::Matx31f T({ -50.28, 0.077, 0.45 });
+  int n = 5 ; //nb  points necesssary to determine [3x3] transform matrix
+  long w_goal = 0.6;
+  Frame* ptr_f ;
+  float error = 8; //max error in px for a point to be considered an inlier
 
-//parcour de toute les frames
-for (auto it = begin (sliced_video); it != end (sliced_video); ++it)
-{
+  //Frame var init
+  int ind = 0; //frame index
+
+
+  //ICP var init
+
+  //Bundle adjustement var init
+
+
+  //general purpose var
+
+
+  std::cout<<"entering loop" <<std::endl<<std::endl;
+  //iterating over every frame
+  for (auto it = begin (sliced_video); it != end (sliced_video); ++it , ind++){
 
     chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
 
-    //récupération image gauche et droite de la frame courante
+    //getting left and right img of a given time
     IMAGE1=it->first;
     IMAGE2=it->second;
 
-    //Appelle de orb
-    gift=a.run(IMAGE1,IMAGE2);
-    cout<<"HERE3"<<endl;
+    //ORB run
+    gift=orb.run(IMAGE1,IMAGE2);
     keypoint1=get<0>(gift);
     keypoint2=get<1>(gift);
     MATCHES=get<2>(gift);
     STOP=get<3>(gift);
-    if (STOP==true)
-    {
-        cout<<"I WAS HERE, WITNESS ME"<<endl;
-        continue;
+
+    Ransac ransac(gift , n , error , w_goal , R , T , K_g , K_d);
+    ransac.check_inliers(ransac.P);
+
+    if (STOP==true){
+      cout<<"EMPTY / BLACK FRAME NOT TAKEN IN COUNT "<<endl;
+      continue;
     }
 
-
-
+    Frame f(ind , IMAGE1 , IMAGE2);
+    f.features = ransac.inlier ; //we only ned to keep the keypoints, fuck  DMATCH
+    std::cout<<f.features.size() <<std::endl;//<<"\t"<<ransac.inlier.size() <<std::endl;
     chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
     chrono::duration<double> time_used = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
     cout << "Time cost = " << time_used.count() << " seconds. " << endl;
-
-    a.show();
-    waitKey(1);
-
-
-//    cout<<"HERE2"<<endl;
-//    cout<<IMAGE1.size<<endl;
-//    imshow( "FrameG", IMAGE1 );
-//    imshow( "FrameD", IMAGE2 );
-//    waitKey(0);
-
-}
+    //    orb.show();
+    //    waitKey(1);
+  }
 
 }
