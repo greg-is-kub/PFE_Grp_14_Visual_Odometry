@@ -1,3 +1,5 @@
+#ifndef FRAME
+#define FRAME
 #include <opencv2/core/core.hpp>
 #include <vector>
 #include <iostream>
@@ -7,7 +9,7 @@ class Frame{
   public :
     int index ; // frame nb
     long timestamp ;
-    bool is_keyframe ;
+    bool keyframe ;
     uint64_t keyframe_id ;
     std::pair< cv::Mat , cv::Mat > img ; //respectively left then right img
     std::vector< std::pair<cv::KeyPoint , cv::KeyPoint> > features ; //only matched features are kept
@@ -17,6 +19,8 @@ class Frame{
     ~Frame(void);
 
 
-    bool is_key_frame();
+    bool is_keyframe();
 
 };
+
+#endif
