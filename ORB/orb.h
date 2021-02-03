@@ -19,7 +19,7 @@ class Orb
         Mat imgG;
         Mat imgD;
 
-        tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>> run(Mat, Mat);
+        tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>,bool> run(Mat, Mat);
 
         void show();
 
@@ -30,7 +30,7 @@ class Orb
 
         vector<DMatch> matches;
 
-        Ptr<FeatureDetector> detector = ORB::create();
+        Ptr<FeatureDetector> detector = ORB::create(1000);
         Ptr<DescriptorExtractor> descriptor = ORB::create();
         Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create("BruteForce-Hamming");
 
