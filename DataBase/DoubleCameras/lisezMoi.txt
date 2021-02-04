@@ -1,0 +1,4 @@
+Deux essais, l'un avec une vitesse de déplacement du robot rapide, l'autre avec un déplacement plus lent (ce qui change le décalage spatial entre deux ximages successives). 
+Dans chaque dossier d'essai, il y a à chaque instant trois images : l'image bino (contenant les deux images de la caméra binoculaire), l'image gauche et l'image droite du système caméra du robot weedy (deux caméras indépendantes calibrées entre elles). 
+Il y a 60 images par essai.
+Il y a aussi une vidéo observateur exterieur par essai. 
