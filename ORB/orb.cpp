@@ -113,3 +113,28 @@ void Orb::show()
 
         waitKey(0);
     }
+
+pair<vector<DMatch>,bool> Orb::run_temporal (Mat img1, vector<KeyPoint> k1, Mat img2, vector<KeyPoint> k2)
+    {
+        flag=false;
+        tuple<Mat,Mat> l_d;
+        Mat d1,d2;
+        l_d=get_descriptor(img1,k1,img2,k2);
+        d1=get<0>(l_d);
+        d2=get<1>(l_d);
+
+        matches=get_match(d1,d2);
+        if (matches.empty())
+        {
+            flag=true;
+        }
+        pair<vector<DMatch>,bool> to_return (matches,flag);
+        return to_return;
+    }
+
+
+
+
+
+
+

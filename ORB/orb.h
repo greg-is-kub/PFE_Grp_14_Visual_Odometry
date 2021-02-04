@@ -21,7 +21,11 @@ class Orb
 
         tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>,bool> run(Mat, Mat);
 
+        pair<vector<DMatch>,bool> run_temporal (Mat, vector<KeyPoint>, Mat, vector<KeyPoint>);
+
         void show();
+
+        vector<DMatch> get_match(Mat d1, Mat d2);
 
     protected:
 
@@ -42,7 +46,7 @@ class Orb
 
         tuple<Mat,Mat> get_descriptor(Mat, vector<KeyPoint>, Mat, vector<KeyPoint>);
 
-        vector<DMatch> get_match(Mat d1, Mat d2);
+
 
 };
 
