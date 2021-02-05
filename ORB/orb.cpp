@@ -116,7 +116,7 @@ void Orb::show()
 
 pair<vector<DMatch>,bool> Orb::run_temporal (Mat img1, vector<KeyPoint> k1, Mat img2, vector<KeyPoint> k2)
     {
-        flag=false;
+        bool flag=false;
         tuple<Mat,Mat> l_d;
         Mat d1,d2;
         l_d=get_descriptor(img1,k1,img2,k2);
