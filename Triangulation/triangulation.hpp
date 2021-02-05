@@ -55,10 +55,14 @@ public:
                                 -0.0121823887399877,0.00518174551610382,
                                 0.0122525920533588, 0.999911507835259);
     Mat t = (Mat_<double>(1, 3) << -50.28, 0.077, 0.45);
+    Mat pts_4d; // points camera without depth
+    vector<Point2d> pts_3; // points pixels
     
-    
-    unordered_map<Pixel, Point3f> triangulation(const vector<KeyPoint> &keypoint_1, const vector<KeyPoint> &keypoint_2, const std::vector<DMatch> &matches);
-    void pixel2cam_vector(const vector<KeyPoint> &keypoint_1, const vector<KeyPoint> &keypoint_2, const std::vector<DMatch> &matches, vector<Point2f> &pts_1, vector<Point2f> & pts_2, vector<Point2d> &pts_3, vector<Point2d> & pts_4);
+    unordered_map<Pixel, Point3f> depth_map();
+    void triangulation(const vector< tuple< cv::KeyPoint , cv::KeyPoint , cv::DMatch > > & );
+    void pixel2cam_vector(const vector< tuple< cv::KeyPoint , cv::KeyPoint , cv::DMatch > > & , vector<Point2f> &, vector<Point2f> &);
+    void find_points3d(std::vector<cv::KeyPoint>&, std::vector<cv::KeyPoint>&, std::vector<cv::DMatch>&, std::unordered_map<Pixel, cv::Point3_<float> >&, std::unordered_map<Pixel, cv::Point3_<float> >&, std::vector<cv::Point3_<float> >&, std::vector<cv::Point3_<float> > &);
+
 
 };
 

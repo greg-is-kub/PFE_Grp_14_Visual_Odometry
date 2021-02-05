@@ -8,6 +8,7 @@
 #include "../ORB/orb.h"
 #include "../data_containers/Frame/frame.hpp"
 #include "ransac.hpp"
+#include "../Triangulation/triangulation.hpp"
 //#include ""
 
 #include <chrono>
@@ -72,6 +73,12 @@ int main(int argc, char **argv)
     std::cout <<"inlier rate =  " << ransac.best_w << std::endl;
     std::cout << "nb inlier = " << ransac.inlier.size()<<std::endl;
     cout << "Time cost = " << time_used.count() << " seconds. " << endl;
+    
+    tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>> rs = ransac.inlier;
+    vector<KeyPoint> kp1 = (), kp2;
+    vector<DMatch> mbest;
+    
+    
 
     return 0;
 }
