@@ -11,6 +11,7 @@
 #include "ICP/ICP.h"
 #include "trajectory.h"
 
+
 using namespace std;
 using namespace cv;
 
@@ -86,10 +87,10 @@ std::tuple< cv::KeyPoint , cv::KeyPoint > custom_pop(  std::tuple< cv::KeyPoint 
 //________________________________________________________________________________________________________
 //_________________________________MAIN_MAIN_MAIN_MAIN_MAIN_MAIN__________________________________________
 //________________________________________________________________________________________________________
-int main(){
+int main(int argc, char **argv){
     //preparation of the frames
     vector<pair<Mat,Mat>> sliced_video;
-    string path="test_camera_stereo.mp4";
+    string path= argv[1];
     //we won't process every frame , only one frame every delay frame
     int delay = 10;
     std::cout<<"precomputing video and extracting frames. . .";
@@ -128,7 +129,7 @@ int main(){
     Icp icp;
     Eigen::Matrix3d Rt;
     Eigen::Vector3d tt;
-    vector<Point3f> cloud_t, cloud_t1;
+    
 
     //Bundle adjustement var init
 
@@ -136,17 +137,18 @@ int main(){
     //general purpose var
     Trajectory trajectory;
     
-
-    std::cout<<"entering loop" <<std::endl<<std::endl;
     //iterating over every frame
     
     Mat image_pre;
     vector<KeyPoint> kp_pre;
     unordered_map<Pixel, Point3f> depth_map_pre;
     
+    std::cout<<"entering loop" <<std::endl<<std::endl;
+    chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
+    
     for (auto it = begin (sliced_video); it != end (sliced_video); ++it , ind++){
 
-        chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
+        
 
         //getting left and right img of a given time
         IMAGE1=it->first;
@@ -172,30 +174,41 @@ int main(){
         //std::cout<<f.features.size() <<std::endl;//<<"\t"<<ransac.inlier.size() <<std::endl;
         chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
         chrono::duration<double> time_used = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
-        cout << "Time cost = " << time_used.count() << " seconds. " << endl;
+        //cout << "Time cost = " << time_used.count() << " seconds. " << endl;
         
-        // triangulation 
+        // triangulation
         triangu.triangulation(ransac.inlier);
         unordered_map<Pixel, Point3f> depth_map_t = triangu.depth_map();
         
-        if(it != begin(sliced_video)){
+        if(it != begin(sliced_video) + 1){
         
             pair<vector<DMatch>,bool> temp_m = orb.run_temporal(IMAGE1, keypoint1, image_pre, kp_pre);
             matches_temp = get<0>(temp_m);
             
+            vector<Point3f> cloud_t, cloud_t1;
+            
             triangu.find_points3d(keypoint1, kp_pre, matches_temp, depth_map_t, depth_map_pre, cloud_t, cloud_t1);
+            
+            cout << cloud_t.size() <<endl;
             
             icp.getTransform(cloud_t, cloud_t1, Rt, tt);
             
+            //cout << Rt <<endl <<tt << endl;
             trajectory.add_to_path(Rt, tt);
-            trajectory.show();
+            //trajectory.show();
+
         }
         
-        
-        
+        depth_map_pre = depth_map_t;
+        kp_pre = keypoint1;
+        IMAGE1.copyTo(image_pre);   
 
         //    orb.show();
         //    waitKey(1);
   }
 
+trajectory.show();
+chrono::steady_clock::time_point ti = chrono::steady_clock::now();
+chrono::duration<double> timei_used = chrono::duration_cast<chrono::duration<double>>(ti - t1);
+cout << "Time cost = " << timei_used.count() << " seconds. " << endl;
 }

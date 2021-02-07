@@ -40,8 +40,8 @@ void Triangulation::triangulation(const vector< tuple< cv::KeyPoint , cv::KeyPoi
     
     vector<Point2f> pts_1, pts_2; // points repere camera
     
-    pixel2cam_vector(inlier, pts_1, pts_2);
-    cv::triangulatePoints(T1, T2, pts_1, pts_2, pts_4d);
+    pixel2cam_vector(inlier, pts_1, pts_2); // pixel to camera
+    cv::triangulatePoints(T1, T2, pts_1, pts_2, pts_4d); // triangulation:  2d to 3d 
     //cout<< pts_4d <<endl;
     
 }
@@ -52,6 +52,7 @@ unordered_map<Pixel, Point3f> Triangulation::depth_map(){
     for (int i = 0; i < pts_4d.cols; i++) {
         Mat x = pts_4d.col(i);
         x /= x.at<float>(3, 0);
+        x /= 50.;
         Point3f p3f(x.at<float>(0, 0), x.at<float>(1, 0), x.at<float>(2,0));
         
         Pixel pix(pts_3[i].x, pts_3[i].y);
@@ -61,7 +62,6 @@ unordered_map<Pixel, Point3f> Triangulation::depth_map(){
         
     }
     return depth_map;
-    
 }
 
 void Triangulation::find_points3d(vector<KeyPoint> & kp_t, vector<KeyPoint> & kp_t1, vector<DMatch> & matches, unordered_map<Pixel, Point3f> & depth_map_t, unordered_map<Pixel, Point3f> & depth_map_t1, vector<Point3f> & cloud_t, vector<Point3f> & cloud_t1){

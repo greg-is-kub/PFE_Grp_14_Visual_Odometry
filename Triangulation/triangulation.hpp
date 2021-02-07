@@ -1,3 +1,6 @@
+#ifndef TRIANGULATION
+#define TRIANGULATION
+
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <unordered_map>
@@ -15,8 +18,7 @@ struct Pixel
     // constructor
     Pixel(int x, int y): x(x), y(y) {}
  
-    // overload < operator to use a Node object as a key in a std::map
-    // It returns true if the current object appears before the specified object
+    // overload operator ==
     bool operator==(const Pixel &ob) const
     {
         return (x == ob.x && y == ob.y);
@@ -33,10 +35,7 @@ namespace std {
       using std::size_t;
       using std::hash;
 
-      // Compute individual hash values for first,
-      // second and third and combine them using XOR
-      // and bit shifting:
-
+      // Compute individual hash values for first and second
       return ((hash<int>()(k.x)
                ^ (hash<int>()(k.y) << 1)) >> 1);
     }
@@ -68,3 +67,4 @@ public:
 
 Point2f pixel2cam(const Point2d &p, const Mat &K);
 
+#endif
