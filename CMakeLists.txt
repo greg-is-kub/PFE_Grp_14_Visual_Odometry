@@ -19,8 +19,11 @@ include_directories(
         "/usr/include/eigen3/"
 )
 
-message(STATUS "=== ZLIB_LIBRARIES: ${Pangolin_LIBRARIES}")
-message(STATUS "=== ZLIB_INCLUDE_DIRS: ${Pangolin_INCLUDE_DIRS}")
+message(STATUS "=== Pangolin_LIBRARIES: ${Pangolin_LIBRARIES}")
+message(STATUS "=== Pangolin_INCLUDE_DIRS: ${Pangolin_INCLUDE_DIRS}")
+
+message(STATUS "=== OPENCV_LIBRARIES: ${OP_LIBRARIES}")
+message(STATUS "=== OPENCV_INCLUDE_DIRS: ${OP_INCLUDE_DIRS}")
 
 add_executable(test_trajectory trajectory.cpp ORB/orb.cpp Triangulation/triangulation.cpp ransac/ransac.cpp ICP/ICP.cpp video_slicer.cpp)
 target_link_libraries(test_trajectory ${OP_LIBRARIES} ${Pangolin_LIBRARIES})
