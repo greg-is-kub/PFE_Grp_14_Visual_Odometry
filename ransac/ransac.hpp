@@ -34,14 +34,14 @@ class Ransac{
     ~Ransac(void);
 
     //whole process of applying ransac on the dataset until we found reliable points
-    cv::Affine3<float> apply_ransac(); //USELESS BC on a deja la matrice de transformation de la camera gauche à la caméra droite et elle est quasi constante
+    cv::Affine3<float> apply_ransac(int max_attempt); //USELESS BC on a deja la matrice de transformation de la camera gauche à la caméra droite et elle est quasi constante
 
     //application of the transformation in order to get the inlier
     //returns the number of inlier found
     int check_inliers(cv::Affine3<float> P);
 
     //create a transform matrix based on a array of n pair of points
-    cv::Affine3<float> transform_from_KeyPoints(std::vector<std::tuple<cv::KeyPoint, cv::KeyPoint, cv::DMatch> > kp); //Inutile pour la raison qu'on a pas besoin de creer la matrice de tarnsformation
+  //  cv::Affine3<float> transform_from_KeyPoints(std::vector<std::tuple<cv::KeyPoint, cv::KeyPoint, cv::DMatch> > kp); //Inutile pour la raison qu'on a pas besoin de creer la matrice de tarnsformation
 
     // reset need values in order to avoid having to destroy and rebuild an object
     void reset();

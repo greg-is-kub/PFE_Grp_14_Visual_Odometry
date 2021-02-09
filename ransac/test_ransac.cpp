@@ -29,32 +29,28 @@ int main(int argc, char **argv)
 
     //Appelle et récupéartion de la partie ORB
     chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
-    tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>> gift;
+    tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch> , bool> gift;
     vector<KeyPoint> keypoint1, keypoint2;
     vector<DMatch> MATCHES;
     gift=a.run(IMAGE1,IMAGE2);
     keypoint1=get<0>(gift);
     keypoint2=get<1>(gift);
     MATCHES=get<2>(gift);
+    std::get<3>(gift) = true;
 
     chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
     chrono::duration<double> time_used = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
     cout <<"debut test ransac"<<endl;
     //a.show();
-    //a.waitKey(0);
 
 
 
-    tuple<vector<KeyPoint>,vector<KeyPoint>,vector<DMatch>,bool> input_data ;
-    get<0>(input_data)= keypoint1;
-    get<1>(input_data)= keypoint2;
-    get<2>(input_data)= MATCHES;
-    get<3>(input_data) = true;
+
     int n = 5 ; //nb  points necesssary to determine [3x3] transform matrix
-    long w_goal = 0.6;
-    Frame f(1 , 0.0 , IMAGE1 , IMAGE2);
+    float w_goal = 0.95;
+    Frame f(1 , IMAGE1 , IMAGE2);
     Frame* ptr_f  = &f;
-    float error = 10; //error in px
+    float error = 1 ; //error in px
     cv::Matx33f K_d({ 1535.50, 0, 739.86, 0, 1535.00, 606.36, 0, 0, 1 });
     cv::Matx33f K_g ({1534.72, 0, 676.97, 0, 1535.00, 698.28, 0, 0, 1});
     cv::Matx33f R({1.00, 0.0133051171055671,
@@ -63,10 +59,13 @@ int main(int argc, char **argv)
                                 0.0122525920533588, 0.999911507835259});
     cv::Matx31f T({ -50.28, 0.077, 0.45 });
     float focal_length = 0.0036; // focale length
-    Ransac ransac(input_data ,  n ,  error , w_goal ,  R , T , K_g , K_d);
+    Ransac ransac(gift ,  n ,  error , w_goal ,  R , T , K_g , K_d);
     std::cout<<"object created"<<std::endl;
-
-    ransac.check_inliers(ransac.P);
+    std::cout <<"nb_samples = " << ransac.nb_samples << std::endl;
+    std::cout << "keypoint1.len" << get<0>(gift).size() <<std::endl;
+    std::cout << "DMATCH.len" << get<2>(gift).size() <<std::endl;
+    int max_attempt = 500;
+    ransac.apply_ransac(max_attempt);
 
     std::cout <<"nb_samples = " << ransac.nb_samples << std::endl;
     std::cout <<"inlier rate =  " << ransac.best_w << std::endl;

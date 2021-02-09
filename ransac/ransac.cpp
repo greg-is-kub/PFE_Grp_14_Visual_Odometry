@@ -2,6 +2,7 @@
 #include <set>
 #include <opencv2/core/core.hpp>
 #include <opencv2/core/affine.hpp>
+#include <opencv2/calib3d.hpp>
 #include "ransac.hpp"
 
 //______________________CONSTRUCTOR & DESTRUCTOR_____________________
@@ -28,29 +29,57 @@ Ransac::~Ransac(void){}
 
 
 //______________________MAIN CLASS FUNCTION _____________________
-cv::Affine3<float> Ransac::apply_ransac(){
+cv::Affine3<float> Ransac::apply_ransac( int max_attempt ){
 
-  uint64_t cpt_attempt = 0 , max_attempt = 500;
+
+  uint64_t cpt_attempt = 0 ;
   std::vector<std::tuple<cv::KeyPoint, cv::KeyPoint, cv::DMatch> > temp_point;
-  long temp_w = 0 , max_w = 0; //current iteration w value
-  cv::Affine3<float> transform ; // transform created with pair of keypoints
+  float temp_w = 0 , max_w = 0 ; //current iteration w value
+  float temp_inlier_nb;
 
   while( this->best_w < this->w_goal && cpt_attempt < max_attempt) {
+    //extract n keypoints from the dataset
     temp_point = this->get_n_KeyPoints();
-    transform = this->transform_from_KeyPoints(temp_point);
-    temp_w = this->check_inliers( transform ) / this-> nb_samples;
-
-    if( temp_w > max_w ) {
-      this->best_w = temp_w;
-      this->best_points = temp_point;
-      this->best_transform = transform;
+    std::cout<<"oui"<<std::endl;
+    std::vector<cv::Point2f> corners1 , corners2 ;
+    int i = 0 ;
+    for(int i = 0; i < temp_point.size() ; i++){
+        corners1.push_back( std::get<0>(temp_point.at(i)).pt );
+        corners2.push_back( std::get<1>(temp_point.at(i)).pt );
+        //std::cout<<"i = " << i <<std::endl;
+        //std::cout<<"corner1 = [" << corners1.at(i).x << " , " << corners1.at(i).y << "]" <<std::endl;
+        //std::cout<<"corner2 = [" << corners2.at(i).x << " , " << corners2.at(i).y << "]" <<std::endl;
     }
+    //create an homography with it
+    cv::Mat_<float> temp ,temp2;
+    temp = cv::findHomography( corners1 ,corners2,	temp2 , 0 , 3);
+    cv::Affine3f transform(temp) ;
+    //apply the homography and check inliers
+    //if we get a better score the data will be saved during check_inlier
+    temp_inlier_nb = this->check_inliers( transform ) ;
+    std::cout << " transform = " << transform.matrix(0,0) <<"\t\t" << transform.matrix(0,1) <<"\t\t"<< transform.matrix(0,2) <<"\t\t"<< transform.matrix(0,3) << std::endl ;
+    std::cout << " transform = " << transform.matrix(1,0) <<"\t\t" << transform.matrix(1,1) <<"\t\t"<< transform.matrix(1,2) <<"\t\t"<< transform.matrix(1,3) << std::endl ;
+    std::cout << " transform = " << transform.matrix(2,0) <<"\t\t" << transform.matrix(2,1) <<"\t\t"<< transform.matrix(2,2) <<"\t\t"<< transform.matrix(2,3) << std::endl ;
+    std::cout << " transform = " << transform.matrix(3,0) <<"\t\t" << transform.matrix(3,1) <<"\t\t"<< transform.matrix(3,2) <<"\t\t"<< transform.matrix(3,3) << std::endl ;
+    std::cout<<"temp_inlier_nb = " << temp_inlier_nb <<std::endl;
+    temp_w = temp_inlier_nb / this-> nb_samples;
+
+    cpt_attempt ++ ;
+
+    std::cout << "this->best_w  =" << this->best_w << std::endl;
+    std::cout << "this->w_goal  =" << this->w_goal << std::endl;
+    std::cout << "cpt_attempt  =" << cpt_attempt << std::endl;
+    std::cout << "max_attempt  =" << max_attempt << std::endl<<std::endl;
+
+
   }
+
   if(cpt_attempt >= max_attempt){
     std::cout<< "max_attempt reached and w_goal could not be reached, best_w = "<< this->best_w << std::endl << "best_points and best_transform are memorized"<<std::endl;
   }
   return this->best_transform;
 }
+
 
 //_____________________UTILITY FUNCTIONS__________________
 std::vector <std::tuple< cv::KeyPoint , cv::KeyPoint , cv::DMatch > > Ransac::get_n_KeyPoints(){
@@ -66,19 +95,15 @@ std::vector <std::tuple< cv::KeyPoint , cv::KeyPoint , cv::DMatch > > Ransac::ge
     }while (used_val.find(temp) != used_val.end() ); //as long as temp is already in used_val
     used_val.insert(temp);
     res.push_back( this->operator[](temp) );
-  }
+
+    cv::Point2f corners1 , corners2 ;
+    corners1 = std::get<0>( this->operator[](temp)).pt;
+    corners2 =  std::get<0>(res.at(i)).pt;
+    //std::cout<<"corner1 = [" << corners1.x << " , " << corners1.y << "]" <<std::endl;
+    }
+    //std::cout << "out of get N keypoints"<<std::endl << std::endl;;
   return res;
 }
-
-cv::Affine3<float> Ransac::transform_from_KeyPoints(std::vector<std::tuple<cv::KeyPoint, cv::KeyPoint, cv::DMatch> > kp){
-  /*create homogenous transform matrix from n keypoints*/
-//  cv::Point2f X , Y ;
-//  X = kp.at(0);
-//  Y = kp.at(1);
-  cv::Affine3<float> M;
-  return M;
-}
-
 
 
 int Ransac::check_inliers(cv::Affine3<float> P){
@@ -142,9 +167,8 @@ int Ransac::check_inliers(cv::Affine3<float> P){
 }
 
 
-
 //______________________OPERATOR OVERLOAD_____________________
-std::tuple< cv::KeyPoint , cv::KeyPoint , cv::DMatch > Ransac::operator[](uint64_t index){
+std::tuple< cv::KeyPoint , cv::KeyPoint , cv::lk > Ransac::operator[](uint64_t index){
   //Allow an easy access of data in form of pairs
   //maybe problem de pointeurs à cet endroit à verifier
   //accesseur quand meme pratique on va pas se mentir permet de retourner les matched points et leur dmatch
