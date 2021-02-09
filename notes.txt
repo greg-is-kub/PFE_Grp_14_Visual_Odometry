@@ -1,9 +1,0 @@
-Les points entre les images gauches et droites ne sont pas reliés par une contrainte linéaire.
-La seule contrainte que l'on puisse appliquer est la contrainte épipolaire.
-
-Résultat dépend de la qualité de la calibration.
-Etant donné que cest une droite on aura surement des faux positifs.
-
-m1^t*F.dot(m2)  = 0
-l2^t * m2 =    0 => m2 appartient à l2
-E = S(T)R
