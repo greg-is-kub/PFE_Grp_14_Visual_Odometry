@@ -180,28 +180,28 @@ int main() {
 //    myBA.optimizePoses(all_poses_filepath, save_optimized_poses);
 
     // test quaternion
-//    Eigen::Matrix3d R;
-//    R<<1,0,0,0,1,0,0,0,1;
-//
-//    Eigen::Vector3d t(1,2,3);
-//
-//    cout<<R<<endl;
-//    Eigen::Quaterniond q(R);
-//    cout<<q.x()<<endl;
-//    cout<<q.y()<<endl;
-//    cout<<q.z()<<endl;
-//    cout<<q.w()<<endl;
-//
-//    Eigen::Isometry3d T;
-//    T.rotate(R);
-//    T.pretranslate(t);
-//
-//    Eigen::Quaterniond q_new(T.rotation());
-//    cout<<"q_new: "<<endl;
-//    cout<<q_new.x()<<endl;
-//    cout<<q_new.y()<<endl;
-//    cout<<q_new.z()<<endl;
-//    cout<<q_new.w()<<endl;
+    Eigen::Matrix3d R;
+    R<<1,0,0,0,1,0,0,0,1;
+
+    Eigen::Vector3d t(1,2,3);
+
+    cout<<R<<endl;
+    Eigen::Quaterniond q(R);
+    cout<<q.x()<<endl;
+    cout<<q.y()<<endl;
+    cout<<q.z()<<endl;
+    cout<<q.w()<<endl;
+
+    Eigen::Isometry3d T;
+    T.rotate(R);
+    T.translate(t);
+
+    Eigen::Quaterniond q_ew(T.rotation());
+    cout<<"q_new: "<<endl;
+    cout<<q_new.x()<<endl;
+    cout<<q_new.y()<<endl;
+    cout<<q_new.z()<<endl;
+    cout<<q_new.w()<<endl;
 
 
 
