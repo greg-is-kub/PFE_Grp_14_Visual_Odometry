@@ -8,7 +8,7 @@
 
 ## data base
 composed of different Videos taken with stereo vision cameras
-Every video has a know displacement that is measured through a process detailed in [TO REDACT]
+Every video has a know displacement that is measured through a process detailed in DataBase
 
 ## Team Members :
  SHI Mengmeng
