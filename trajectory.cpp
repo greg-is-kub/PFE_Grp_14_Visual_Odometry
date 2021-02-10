@@ -107,50 +107,91 @@ void Trajectory::replace_path(vector<vector<double>>new_path)
     Trajectory::path=new_path;
     vector<double> last= new_path.back();
 
-    Trajectory::tx_M=last[0];
-    Trajectory::ty_M=last[1];
-    Trajectory::tz_M=last[2];
+    Quaterniond q_;
+    q_.x()=last[3];
+    q_.y()=last[4];
+    q_.z()=last[5];
+    q_.w()=last[6];
 
-    Trajectory::qx_M=last[3];
-    Trajectory::qy_M=last[4];
-    Trajectory::qz_M=last[5];
 
-    Trajectory::qw_M=last[6];
+    Isometry3d Twr(q_);
+    Twr.pretranslate(Vector3d(last[0], last[1], last[2]));
+
+    Trajectory::last=Twr;
+
+//    Trajectory::tx_M=last[0];
+//    Trajectory::ty_M=last[1];
+//    Trajectory::tz_M=last[2];
+//
+//    Trajectory::qx_M=last[3];
+//    Trajectory::qy_M=last[4];
+//    Trajectory::qz_M=last[5];
+//
+//    Trajectory::qw_M=last[6];
 }
 
 void Trajectory::add_to_path(Eigen::Matrix3d R_, Eigen::Vector3d t_)
 {
+    //Récupère la nouvelle transformation et calcule la matrice de transformation
+    Isometry3d In_ =Isometry3d::Identity();
+    In_.rotate(R_);
+    In_.pretranslate(t_);
+
+    //Obtiens la nouvelle matrice de transformation projeté dans le repère monde
+    Isometry3d New_ = In_ * Trajectory::last;
+
+
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Eigen::Matrix3d R_n=New_.rotate();
+    //Eigen::Vector3d t_n=New_.pretranslate();
+
+//    Eigen::Matrix3d R_n=
+//    Eigen::Vector3d t_n = (New_.translation()(0), New_.translation()(1), New_.translation()(2));
+
+    Eigen::Matrix3d R_n=New_.rotation();
+    Eigen::Vector3d t_n=New_.translation();
+
+
+
     //Transform les entrées en Quaternion et récupère les translations
-    Quaterniond q(R_);
+    Quaterniond q(R_n);
 
     double ltx, lty, ltz, lqx, lqy, lqz, lqw;
-    ltx=t_(0,0);
-    lty=t_(1,0);
-    ltz=t_(2,0);
+    ltx=t_n(0,0);
+    lty=t_n(1,0);
+    ltz=t_n(2,0);
     lqx=q.x();
     lqy=q.y();
     lqz=q.z();
     lqw=q.w();
-    /////////////////////////////////////////////////////////////////////////////////////////////:
 
-    //Addition avec _M pour obtenir les coordonnés monde
-    double ntx, nty, ntz, nqx, nqy, nqz, nqw;
-    ntx=ltx+Trajectory::tx_M;
-    nty=lty+Trajectory::ty_M;
-    ntz=ltz+Trajectory::tz_M;
-    nqw=lqw*Trajectory::qw_M;
-    nqx=lqx*Trajectory::qx_M;
-    nqy=lqy*Trajectory::qy_M;
-    nqz=lqz*Trajectory::qz_M;
 
-    vector<double> to_add {ntx, nty, ntz, nqw, nqx, nqy, nqz};
+//    Addition avec _M pour obtenir les coordonnés monde
+//    double ntx, nty, ntz, nqx, nqy, nqz, nqw;
+//    ntx=ltx+Trajectory::tx_M;
+//    nty=lty+Trajectory::ty_M;
+//    ntz=ltz+Trajectory::tz_M;
+//    nqw=lqw*Trajectory::qw_M;
+//    nqx=lqx*Trajectory::qx_M;
+//    nqy=lqy*Trajectory::qy_M;
+//    nqz=lqz*Trajectory::qz_M;
+
+    vector<double> to_add {ltx, lty, ltz, lqw, lqx, lqy, lqz};
     Trajectory::path.push_back(to_add);
 
-    Trajectory::tx_M=ntx;
-    Trajectory::ty_M=nty;
-    Trajectory::tz_M=ntz;
-    Trajectory::qw_M=nqw;
-    Trajectory::qx_M=nqx;
-    Trajectory::qy_M=nqy;
-    Trajectory::qz_M=nqz;
+
+    Trajectory::last = New_;
+
+
+//    Trajectory::tx_M=ntx;
+//    Trajectory::ty_M=nty;
+//    Trajectory::tz_M=ntz;
+//    Trajectory::qw_M=nqw;
+//    Trajectory::qx_M=nqx;
+//    Trajectory::qy_M=nqy;
+//    Trajectory::qz_M=nqz;
 }
