@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++11 -O2 -O3 -DNDEBUG  -rdynamic CMakeFiles/pose_graph_g2o_lie.dir/pose_graph_g2o_lie_algebra.cpp.o  -o pose_graph_g2o_lie  -lg2o_core -lg2o_stuff 

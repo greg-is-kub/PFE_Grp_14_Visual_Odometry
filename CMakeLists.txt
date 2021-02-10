@@ -8,23 +8,25 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 
 
-set(ENV{PKG_CONFIG_PATH} /usr/lib/x86_64-linux-gnu/pkgconfig/)
-find_package(PkgConfig)
-pkg_search_module(OP REQUIRED opencv4)
+#set(ENV{PKG_CONFIG_PATH} /usr/lib/x86_64-linux-gnu/pkgconfig/)
+#find_package(PkgConfig)
+#pkg_search_module(OP REQUIRED opencv4)
 find_package(Pangolin REQUIRED)
+find_package(OpenCV REQUIRED)
+#find_package(G2O REQUIRED)
+
 
 include_directories(
-        ${OP_INCLUDE_DIRS}
+        #${OP_INCLUDE_DIRS}
+        ${OpenCV_INCLUDE_DIRS}
+        ${G2O_INCLUDE_DIRS}
         ${Pangolin_INCLUDE_DIRS}
         "/usr/include/eigen3/"
 )
 
-message(STATUS "=== Pangolin_LIBRARIES: ${Pangolin_LIBRARIES}")
-message(STATUS "=== Pangolin_INCLUDE_DIRS: ${Pangolin_INCLUDE_DIRS}")
-
-message(STATUS "=== OPENCV_LIBRARIES: ${OP_LIBRARIES}")
-message(STATUS "=== OPENCV_INCLUDE_DIRS: ${OP_INCLUDE_DIRS}")
-
 add_executable(test_trajectory trajectory.cpp ORB/orb.cpp Triangulation/triangulation.cpp ransac/ransac.cpp ICP/ICP.cpp video_slicer.cpp)
-target_link_libraries(test_trajectory ${OP_LIBRARIES} ${Pangolin_LIBRARIES})
+target_link_libraries(test_trajectory ${OpenCV_LIBS} ${Pangolin_LIBRARIES})
+
+
+
 

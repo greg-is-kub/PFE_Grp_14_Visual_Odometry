@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="vo"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\Pangolin\;CMake Files\..\..\Pangolin\build\;CMake Files\..\..\Pangolin\build\src\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\usr\;CMake Files\..\..\..\..\usr\share\;CMake Files\..\..\..\..\usr\share\OpenCV\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test_trajectory">
+				<Option output="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/test_trajectory" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DENABLE_SSE"/>
+					<Add directory="/usr/include/opencv"/>
+					<Add directory="/home/yuancheng/Pangolin/include"/>
+					<Add directory="/home/yuancheng/Pangolin/build/src/include"/>
+					<Add directory="/usr/include/eigen3"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 test_trajectory"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test_trajectory/fast">
+				<Option output="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/test_trajectory" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DENABLE_SSE"/>
+					<Add directory="/usr/include/opencv"/>
+					<Add directory="/home/yuancheng/Pangolin/include"/>
+					<Add directory="/home/yuancheng/Pangolin/build/src/include"/>
+					<Add directory="/usr/include/eigen3"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 test_trajectory/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/ICP/ICP.cpp">
+			<Option target="test_trajectory"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/ICP/ICP.h">
+			<Option target="test_trajectory"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/ORB/orb.cpp">
+			<Option target="test_trajectory"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/ORB/orb.h">
+			<Option target="test_trajectory"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/Triangulation/triangulation.cpp">
+			<Option target="test_trajectory"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/Triangulation/triangulation.hpp">
+			<Option target="test_trajectory"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/ransac/ransac.cpp">
+			<Option target="test_trajectory"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/ransac/ransac.hpp">
+			<Option target="test_trajectory"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/trajectory.cpp">
+			<Option target="test_trajectory"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/trajectory.h">
+			<Option target="test_trajectory"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/video_slicer.cpp">
+			<Option target="test_trajectory"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/../../Pangolin/build/src/PangolinConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\Pangolin\build\src\"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/../../Pangolin/build/src/PangolinConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\Pangolin\build\src\"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/../../Pangolin/build/src/PangolinTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\Pangolin\build\src\"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/../../../../usr/share/OpenCV/OpenCVConfig-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\share\OpenCV\"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/../../../../usr/share/OpenCV/OpenCVConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\share\OpenCV\"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/../../../../usr/share/OpenCV/OpenCVModules-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\share\OpenCV\"/>
+		</Unit>
+		<Unit filename="/home/yuancheng/桌面/PFE_Grp_14_Visual_Odometry/../../../../usr/share/OpenCV/OpenCVModules.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\share\OpenCV\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

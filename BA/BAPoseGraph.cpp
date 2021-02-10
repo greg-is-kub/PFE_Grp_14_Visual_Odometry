@@ -48,6 +48,7 @@ void BAPoseGraph::optimizePoses(vector<vector<double>> poses_absolute, vector<ve
     double q1;
     double q2;
     double q3;
+    //double idx1, idx2;
     Eigen::Isometry3d T = Eigen::Isometry3d::Identity();
 
     for (int i=0; i<poses_absolute.size(); i++){
@@ -89,7 +90,8 @@ void BAPoseGraph::optimizePoses(vector<vector<double>> poses_absolute, vector<ve
         fileout.close();
     }
 
-    for (int i=0; i<poses_relative.size(); i++){
+    for (int i=0; i<poses_relative.size()-1; i++){
+
         tx = poses_relative[i][0];
         ty = poses_relative[i][1];
         tz = poses_relative[i][2];
