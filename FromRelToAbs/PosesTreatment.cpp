@@ -26,6 +26,7 @@ void PosesTreatment::RelToAbs_with_push_back(Eigen::Matrix3d R, Eigen::Vector3d 
 }
 
 void PosesTreatment::OutputTxt_with_buffer_abs(vector<vector<double>> buffer_abs_qt) {
+    ofstream fout("AllPosesQuaternionAbsolute.txt");
     for (int i=0; i<buffer_abs_qt.size(); i++){
         double tx = buffer_abs_qt[i][0];
         double ty = buffer_abs_qt[i][1];
@@ -36,7 +37,8 @@ void PosesTreatment::OutputTxt_with_buffer_abs(vector<vector<double>> buffer_abs
         double qw = buffer_abs_qt[i][6];
 
         int index = i;
-        ofstream fout("AllPosesQuaternionAbsolute.txt");
+
         fout <<index<<" "<<tx<<" "<<ty<<" "<<tz<<" "<<qx<<" "<<qy<<" "<<qz<<" "<<qw<<endl;
     }
+    fout.close();
 }
