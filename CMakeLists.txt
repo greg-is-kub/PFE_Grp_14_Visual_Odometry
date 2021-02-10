@@ -12,7 +12,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 #find_package(PkgConfig)
 #pkg_search_module(OP REQUIRED opencv4)
 find_package(Pangolin REQUIRED)
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 3 REQUIRED)
 #find_package(G2O REQUIRED)
 
 

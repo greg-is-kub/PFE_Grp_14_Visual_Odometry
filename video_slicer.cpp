@@ -22,7 +22,7 @@ std::vector<std::pair<cv::Mat,cv::Mat>> video_slicer(string path_to_video, int d
     int n_frame=0;
     VideoCapture vid(path_to_video);
 
-  // Check if video opened successfully
+    // Check if video opened successfully
     if(!vid.isOpened())
     {
         cout << "Error opening video stream or file" << endl;
@@ -106,14 +106,14 @@ int main(int argc, char **argv){
     bool STOP=false;
 
     //RANSAC var init
-    
+
     cv::Matx33f K_d({ 1535.50, 0, 739.86, 0, 1535.00, 606.36, 0, 0, 1 });
     cv::Matx33f K_g ({1534.72, 0, 676.97, 0, 1535.00, 698.28, 0, 0, 1});
 
     //rotation and translation matrix from right to left camera
     cv::Matx33f R({1.00, 0.0133051171055671,-0.00534470796279029,
-                -0.0133694262332647, 0.999836410542635,-0.0121823887399877,
-                0.00518174551610382,0.0122525920533588, 0.999911507835259});
+                   -0.0133694262332647, 0.999836410542635,-0.0121823887399877,
+                   0.00518174551610382,0.0122525920533588, 0.999911507835259});
     cv::Matx31f T({ -50.28, 0.077, 0.45 });
     int n = 5 ; //nb  points necesssary to determine [3x3] transform matrix
     float w_goal = 0.6;
@@ -129,26 +129,26 @@ int main(int argc, char **argv){
     Icp icp;
     Eigen::Matrix3d Rt;
     Eigen::Vector3d tt;
-    
+
 
     //Bundle adjustement var init
 
 
     //general purpose var
     Trajectory trajectory;
-    
+
     //iterating over every frame
-    
+
     Mat image_pre;
     vector<KeyPoint> kp_pre;
     unordered_map<Pixel, Point3f> depth_map_pre;
-    
+
     std::cout<<"entering loop" <<std::endl<<std::endl;
     chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
-    
+
     for (auto it = begin (sliced_video); it != end (sliced_video); ++it , ind++){
 
-        
+
 
         //getting left and right img of a given time
         IMAGE1=it->first;
@@ -175,40 +175,41 @@ int main(int argc, char **argv){
         chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
         chrono::duration<double> time_used = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
         //cout << "Time cost = " << time_used.count() << " seconds. " << endl;
-        
+
         // triangulation
         triangu.triangulation(ransac.inlier);
         unordered_map<Pixel, Point3f> depth_map_t = triangu.depth_map();
-        
+
         if(it != begin(sliced_video) + 1){
-        
+
             pair<vector<DMatch>,bool> temp_m = orb.run_temporal(IMAGE1, keypoint1, image_pre, kp_pre);
             matches_temp = get<0>(temp_m);
-            
+
             vector<Point3f> cloud_t, cloud_t1;
-            
+
             triangu.find_points3d(keypoint1, kp_pre, matches_temp, depth_map_t, depth_map_pre, cloud_t, cloud_t1);
-            
+            //cout << cloud_t <<endl;
+            //cout << cloud_t1 << endl;
             cout << cloud_t.size() <<endl;
-            
+
             icp.getTransform(cloud_t, cloud_t1, Rt, tt);
-            
-            //cout << Rt <<endl <<tt << endl;
+
+            cout << Rt <<endl <<tt << endl;
             trajectory.add_to_path(Rt, tt);
             //trajectory.show();
 
         }
-        
+
         depth_map_pre = depth_map_t;
         kp_pre = keypoint1;
-        IMAGE1.copyTo(image_pre);   
+        IMAGE1.copyTo(image_pre);
 
         //    orb.show();
         //    waitKey(1);
-  }
+    }
 
-trajectory.show();
-chrono::steady_clock::time_point ti = chrono::steady_clock::now();
-chrono::duration<double> timei_used = chrono::duration_cast<chrono::duration<double>>(ti - t1);
-cout << "Time cost = " << timei_used.count() << " seconds. " << endl;
+    trajectory.show();
+    chrono::steady_clock::time_point ti = chrono::steady_clock::now();
+    chrono::duration<double> timei_used = chrono::duration_cast<chrono::duration<double>>(ti - t1);
+    cout << "Time cost = " << timei_used.count() << " seconds. " << endl;
 }

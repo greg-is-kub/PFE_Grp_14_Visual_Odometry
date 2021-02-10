@@ -1,7 +1,6 @@
 #include <iostream>
 #include <set>
-#include <opencv2/core/core.hpp>
-#include <opencv2/core/affine.hpp>
+#include <opencv2/opencv.hpp>
 #include "ransac.hpp"
 
 //______________________CONSTRUCTOR & DESTRUCTOR_____________________

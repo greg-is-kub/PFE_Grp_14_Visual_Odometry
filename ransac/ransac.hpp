@@ -4,8 +4,8 @@
 #include <iostream>
 #include <string>
 #include <tuple>
-#include <opencv2/core/core.hpp>
-#include <opencv2/core/affine.hpp>
+
+#include <opencv2/opencv.hpp>
 #include "../data_containers/Frame/frame.hpp"
 //#include features descriptor from nicolas ORB
 
